@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: myBlog
+
+  # 认证模块使用 PostgreSQL 保存用户数据。
+  # DB_URL、DB_USERNAME、DB_PASSWORD 应在本机环境变量或 IDE 运行配置中设置，
+  # 避免把真实账号密码提交到 Git。
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/blog}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD}
+
+  # Redis 8 保存 AI WebSocket 的短期一次性 ticket。
+  # 本地 Redis 未设置密码时，REDIS_PASSWORD 保持为空即可。
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 3s
+
+mybatis-plus:
+  configuration:
+    # 数据库中的 password_hash 会自动映射为 Java 中的 passwordHash。
+    map-underscore-to-camel-case: true
+
+security:
+  jwt:
+    # 必须提供 Base64 编码的随机密钥，解码后至少 32 字节。
+    secret: ${JWT_SECRET}
+    # 访问令牌的有效期。第一版先只使用 Access Token，后续可再添加 Refresh Token。
+    access-token-ttl: 2h
+
+# LangChain4j 使用 OpenAI 兼容协议调用 DeepSeek。
+# DEEPSEEK_API_KEY 必须放在本机环境变量或 IntelliJ 运行配置中，不能提交到 Git。
+langchain4j:
+  open-ai:
+    chat-model:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      model-name: deepseek-flash
+      temperature: 0.4
+      max-tokens: 1200
+      timeout: 60s
+      max-retries: 2
+      # 避免在日志中记录用户问题、AI 回复和请求鉴权信息。
+      log-requests: false
+      log-responses: false
+
+    # 与普通 chat-model 分开配置，供 WebSocket 流式返回文本片段使用。
+    streaming-chat-model:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+      model-name: deepseek-flash
+      temperature: 0.4
+      max-tokens: 1200
+      timeout: 60s
+      log-requests: false
+      log-responses: false

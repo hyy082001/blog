@@ -1,0 +1,14 @@
+.idea/
+blog-web/
+
+**/.idea/
+**/target/
+**/node_modules/
+**/dist/
+**/*.iml
+
+**/.env
+**/.env.*
+!**/.env.example
+
+*.log
