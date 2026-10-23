@@ -5,6 +5,7 @@ import com.yyh.blogserver.Auth.DTO.LoginRequest;
 import com.yyh.blogserver.Auth.DTO.RegisterRequest;
 import com.yyh.blogserver.Auth.DTO.UserResponse;
 import com.yyh.blogserver.Auth.Service.AuthService;
+import com.yyh.blogserver.Common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -39,8 +40,10 @@ public class AuthController {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse register(@Valid @RequestBody RegisterRequest request) {
-        return authService.register(request);
+    public ApiResponse<UserResponse> register(
+            @Valid @RequestBody RegisterRequest request
+    ) {
+        return ApiResponse.success(authService.register(request));
     }
 
     /**
@@ -50,8 +53,8 @@ public class AuthController {
      * @return Access Token 和当前用户资料
      */
     @PostMapping("/login")
-    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ApiResponse.success(authService.login(request));
     }
 
     /**
@@ -64,8 +67,8 @@ public class AuthController {
      * @return 当前用户的安全资料
      */
     @GetMapping("/me")
-    public UserResponse me(Authentication authentication) {
+    public ApiResponse<UserResponse> me(Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
-        return authService.currentUser(userId);
+        return ApiResponse.success(authService.currentUser(userId));
     }
 }

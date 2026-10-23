@@ -1,4 +1,4 @@
-package com.yyh.blogserver.Model;
+package com.yyh.blogserver.Auth.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 

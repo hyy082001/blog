@@ -4,6 +4,7 @@ import com.yyh.blogserver.Auth.DTO.UpdateProfileRequest;
 import com.yyh.blogserver.Auth.DTO.UserResponse;
 import com.yyh.blogserver.Auth.DTO.ChangePasswordRequest;
 import com.yyh.blogserver.Auth.Service.AuthService;
+import com.yyh.blogserver.Common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -40,20 +41,23 @@ public class UserController {
      * @return 更新后的安全用户资料
      */
     @PutMapping("/me")
-    public UserResponse updateMyProfile(
+    public ApiResponse<UserResponse> updateMyProfile(
             Authentication authentication,
             @Valid @RequestBody UpdateProfileRequest request
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        return authService.updateProfile(currentUserId, request);
+        return ApiResponse.success(
+                authService.updateProfile(currentUserId, request)
+        );
     }
 
     /**
      * 修改当前登录用户的密码。
      *
      * <p>该接口需要有效 JWT。用户 ID 由 JwtAuthenticationFilter 写入 Authentication，
-     * 前端不能指定要修改哪个用户的密码。</p>
+     * 前端不能指定要修改哪个用户的密码。成功时返回 HTTP 204 No Content，
+     * 按 HTTP 规范不携带响应体，因此这里保持 {@code void}。</p>
      *
      * @param authentication 当前请求的认证信息
      * @param request 旧密码和新密码

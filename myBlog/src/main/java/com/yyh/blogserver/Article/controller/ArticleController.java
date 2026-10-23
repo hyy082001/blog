@@ -4,6 +4,7 @@ import com.yyh.blogserver.Article.DTO.ArticleResponse;
 import com.yyh.blogserver.Article.DTO.CreateArticleRequest;
 import com.yyh.blogserver.Article.DTO.UpdateArticleRequest;
 import com.yyh.blogserver.Article.Service.ArticleService;
+import com.yyh.blogserver.Common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.yyh.blogserver.Model.ArticleStatus;
+import com.yyh.blogserver.Article.enums.ArticleStatus;
 
 import java.util.List;
 
@@ -40,19 +41,19 @@ public class ArticleController {
     /** 创建文章。 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ArticleResponse create(
+    public ApiResponse<ArticleResponse> create(
             Authentication authentication,
             @Valid @RequestBody CreateArticleRequest request
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        return articleService.create(currentUserId, request);
+        return ApiResponse.success(articleService.create(currentUserId, request));
     }
 
     /** 获取全部已发布文章；第一版暂不分页。 */
     @GetMapping
-    public List<ArticleResponse> publishedArticles() {
-        return articleService.publishedArticles();
+    public ApiResponse<List<ArticleResponse>> publishedArticles() {
+        return ApiResponse.success(articleService.publishedArticles());
     }
 
     /**
@@ -63,50 +64,63 @@ public class ArticleController {
      * {@code GET /api/articles/mine?status=PUBLISHED} 查询已发布文章。</p>
      */
     @GetMapping("/mine")
-    public List<ArticleResponse> myArticles(
+    public ApiResponse<List<ArticleResponse>> myArticles(
             Authentication authentication,
             @RequestParam(required = false) ArticleStatus status
     ) {
         // JwtAuthenticationFilter 已将用户 ID 写入 Authentication。
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        return articleService.myArticles(currentUserId, status);
+        return ApiResponse.success(
+                articleService.myArticles(currentUserId, status)
+        );
     }
 
     /**
      * 查询当前用户自己的一篇文章详情，包括未发布的草稿。
      */
     @GetMapping("/mine/{articleId}")
-    public ArticleResponse myArticleDetail(
+    public ApiResponse<ArticleResponse> myArticleDetail(
             Authentication authentication,
             @PathVariable Long articleId
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        return articleService.myArticleDetail(currentUserId, articleId);
+        return ApiResponse.success(
+                articleService.myArticleDetail(currentUserId, articleId)
+        );
     }
 
     /** 获取单篇已发布文章详情。 */
     @GetMapping("/{articleId}")
-    public ArticleResponse publishedArticleDetail(
+    public ApiResponse<ArticleResponse> publishedArticleDetail(
             @PathVariable Long articleId
     ) {
-        return articleService.publishedArticleDetail(articleId);
+        return ApiResponse.success(
+                articleService.publishedArticleDetail(articleId)
+        );
     }
 
     /** 修改自己的文章。 */
     @PutMapping("/{articleId}")
-    public ArticleResponse update(
+    public ApiResponse<ArticleResponse> update(
             Authentication authentication,
             @PathVariable Long articleId,
             @Valid @RequestBody UpdateArticleRequest request
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
 
-        return articleService.update(currentUserId, articleId, request);
+        return ApiResponse.success(
+                articleService.update(currentUserId, articleId, request)
+        );
     }
 
-    /** 删除自己的文章，成功时返回 HTTP 204。 */
+    /**
+     * 删除自己的文章。
+     *
+     * <p>成功时返回 HTTP 204 No Content；按 HTTP 规范 204 响应不能携带响应体，
+     * 因此该接口不使用 {@link ApiResponse} 包装。</p>
+     */
     @DeleteMapping("/{articleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(

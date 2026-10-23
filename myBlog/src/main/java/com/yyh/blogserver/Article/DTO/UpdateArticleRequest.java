@@ -1,6 +1,6 @@
 package com.yyh.blogserver.Article.DTO;
 
-import com.yyh.blogserver.Model.ArticleStatus;
+import com.yyh.blogserver.Article.enums.ArticleStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

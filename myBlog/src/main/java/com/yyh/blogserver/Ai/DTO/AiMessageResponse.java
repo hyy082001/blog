@@ -1,7 +1,7 @@
 package com.yyh.blogserver.Ai.DTO;
 
 import com.yyh.blogserver.Model.AiMessage;
-import com.yyh.blogserver.Model.AiMessageRole;
+import com.yyh.blogserver.Ai.enums.AiMessageRole;
 
 import java.time.OffsetDateTime;
 

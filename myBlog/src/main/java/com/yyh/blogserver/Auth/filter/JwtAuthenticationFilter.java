@@ -2,6 +2,7 @@ package com.yyh.blogserver.Auth.filter;
 
 import com.yyh.blogserver.Auth.Service.JwtService;
 import com.yyh.blogserver.Common.ApiErrorResponseWriter;
+import com.yyh.blogserver.Common.enums.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -81,9 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             apiErrorResponseWriter.write(
                     response,
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "无效或已过期的令牌",
-                    request.getRequestURI()
+                    ErrorCode.TOKEN_INVALID
             );
         }
     }

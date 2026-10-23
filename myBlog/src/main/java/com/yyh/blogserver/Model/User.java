@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.yyh.blogserver.Auth.enums.Role;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 映射 PostgreSQL {@code users} 表的领域对象。
@@ -13,6 +15,7 @@ import lombok.Data;
  * 通过 {@code UserMapper} 生成基础 CRUD SQL。</p>
  */
 @Data
+@NoArgsConstructor
 @TableName("users")
 public class User {
 
@@ -45,4 +48,24 @@ public class User {
 
     /** Spring Security 用于保护资源的授权角色。 */
     private Role role;
+
+    /**
+     * 创建一个尚未保存到数据库的注册用户。
+     *
+     * <p>{@code id} 由 PostgreSQL 自增生成，因此不通过构造方法传入。
+     * 从数据库查询记录时，MyBatis-Plus 使用方法参数为空的无参构造方法。</p>
+     */
+    public User(
+            String username,
+            String nickname,
+            String email,
+            String passwordHash,
+            Role role
+    ) {
+        this.username = username;
+        this.nickname = nickname;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.role = role;
+    }
 }

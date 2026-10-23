@@ -1,4 +1,4 @@
-package com.yyh.blogserver.Model;
+package com.yyh.blogserver.Article.enums;
 
 /**
  * 文章发布状态。

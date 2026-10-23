@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
@@ -15,6 +16,7 @@ import java.time.OffsetDateTime;
  * 同一用户可以拥有多个同名会话。</p>
  */
 @Data
+@NoArgsConstructor
 @TableName("ai_conversations")
 public class AiConversation {
 
@@ -36,4 +38,22 @@ public class AiConversation {
     /** 最近一次发送用户消息或收到 AI 回复的时间。 */
     @TableField("updated_at")
     private OffsetDateTime updatedAt;
+
+    /**
+     * 创建一条尚未保存到数据库的会话记录。
+     *
+     * <p>{@code id} 由 PostgreSQL 自增生成，因此不通过构造方法传入。
+     * 从数据库查询记录时，MyBatis-Plus 使用方法参数为空的无参构造方法。</p>
+     */
+    public AiConversation(
+            Long userId,
+            String title,
+            OffsetDateTime createdAt,
+            OffsetDateTime updatedAt
+    ) {
+        this.userId = userId;
+        this.title = title;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

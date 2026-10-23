@@ -1,6 +1,6 @@
 package com.yyh.blogserver.Auth.DTO;
 
-import com.yyh.blogserver.Model.Role;
+import com.yyh.blogserver.Auth.enums.Role;
 
 /**
  * 返回给前端的安全用户信息。

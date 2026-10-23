@@ -1,4 +1,4 @@
-package com.yyh.blogserver.Model;
+package com.yyh.blogserver.Ai.enums;
 
 /**
  * AI 会话中的消息发送者类型。

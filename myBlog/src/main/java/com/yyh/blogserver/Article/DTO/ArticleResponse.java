@@ -1,7 +1,7 @@
 package com.yyh.blogserver.Article.DTO;
 
 import com.yyh.blogserver.Model.Article;
-import com.yyh.blogserver.Model.ArticleStatus;
+import com.yyh.blogserver.Article.enums.ArticleStatus;
 
 import java.time.OffsetDateTime;
 

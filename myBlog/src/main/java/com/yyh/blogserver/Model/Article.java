@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.yyh.blogserver.Article.enums.ArticleStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
@@ -15,6 +17,7 @@ import java.time.OffsetDateTime;
  * 而是转换为 {@code ArticleResponse}，避免数据库结构变化直接影响前端接口。</p>
  */
 @Data
+@NoArgsConstructor
 @TableName("articles")
 public class Article {
 
@@ -57,4 +60,34 @@ public class Article {
     /** 首次发布时间；草稿时必须为空。 */
     @TableField("published_at")
     private OffsetDateTime publishedAt;
+
+    /**
+     * 创建一条尚未保存到数据库的文章记录。
+     *
+     * <p>{@code id} 由 PostgreSQL 自增生成，因此不通过构造方法传入。
+     * 从数据库查询记录时，MyBatis-Plus 使用方法参数为空的无参构造方法。</p>
+     */
+    public Article(
+            String title,
+            String summary,
+            String content,
+            String coverUrl,
+            ArticleStatus status,
+            Long authorId,
+            Long viewCount,
+            OffsetDateTime createdAt,
+            OffsetDateTime updatedAt,
+            OffsetDateTime publishedAt
+    ) {
+        this.title = title;
+        this.summary = summary;
+        this.content = content;
+        this.coverUrl = coverUrl;
+        this.status = status;
+        this.authorId = authorId;
+        this.viewCount = viewCount;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.publishedAt = publishedAt;
+    }
 }

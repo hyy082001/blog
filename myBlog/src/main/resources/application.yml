@@ -20,6 +20,8 @@ spring:
       timeout: 3s
 
 mybatis-plus:
+  # Mapper 接口与 XML 通过 namespace 绑定；BaseMapper 的基础 CRUD 不需要 XML。
+  mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
     # 数据库中的 password_hash 会自动映射为 Java 中的 passwordHash。
     map-underscore-to-camel-case: true

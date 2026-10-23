@@ -8,6 +8,7 @@ import com.yyh.blogserver.Ai.DTO.SendMessageRequest;
 import com.yyh.blogserver.Ai.DTO.SendMessageResponse;
 import com.yyh.blogserver.Ai.Service.AiConversationService;
 import com.yyh.blogserver.Ai.Service.AiStreamTicketService;
+import com.yyh.blogserver.Common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -46,62 +47,77 @@ public class AiConversationController {
     /** 创建一个新的 AI 会话；请求体可以省略。 */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ConversationResponse createConversation(
+    public ApiResponse<ConversationResponse> createConversation(
             Authentication authentication,
             @Valid @RequestBody(required = false) CreateConversationRequest request
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
-        return aiConversationService.createConversation(currentUserId, request);
+        return ApiResponse.success(
+                aiConversationService.createConversation(currentUserId, request)
+        );
     }
 
     /** 查询当前用户自己的会话列表。 */
     @GetMapping
-    public List<ConversationResponse> myConversations(
+    public ApiResponse<List<ConversationResponse>> myConversations(
             Authentication authentication
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
-        return aiConversationService.myConversations(currentUserId);
+        return ApiResponse.success(
+                aiConversationService.myConversations(currentUserId)
+        );
     }
 
     /** 查询一个会话中的全部历史消息。 */
     @GetMapping("/{conversationId}/messages")
-    public List<AiMessageResponse> conversationMessages(
+    public ApiResponse<List<AiMessageResponse>> conversationMessages(
             Authentication authentication,
             @PathVariable Long conversationId
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
-        return aiConversationService.conversationMessages(
-                currentUserId,
-                conversationId
+        return ApiResponse.success(
+                aiConversationService.conversationMessages(
+                        currentUserId,
+                        conversationId
+                )
         );
     }
 
     /** 保存用户问题、调用大模型并返回 AI 回复。 */
     @PostMapping("/{conversationId}/messages")
-    public SendMessageResponse sendMessage(
+    public ApiResponse<SendMessageResponse> sendMessage(
             Authentication authentication,
             @PathVariable Long conversationId,
             @Valid @RequestBody SendMessageRequest request
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
-        return aiConversationService.sendMessage(
-                currentUserId,
-                conversationId,
-                request
+        return ApiResponse.success(
+                aiConversationService.sendMessage(
+                        currentUserId,
+                        conversationId,
+                        request
+                )
         );
     }
 
     /** 申请一个 60 秒有效、仅可使用一次的 AI WebSocket 连接凭证。 */
     @PostMapping("/{conversationId}/stream-ticket")
-    public AiStreamTicketResponse createStreamTicket(
+    public ApiResponse<AiStreamTicketResponse> createStreamTicket(
             Authentication authentication,
             @PathVariable Long conversationId
     ) {
         Long currentUserId = Long.parseLong(authentication.getName());
-        return aiStreamTicketService.issueTicket(currentUserId, conversationId);
+        return ApiResponse.success(
+                aiStreamTicketService.issueTicket(currentUserId, conversationId)
+        );
     }
 
-    /** 删除当前用户自己的一个会话。 */
+    /**
+     * 删除当前用户自己的一个会话。
+     *
+     * <p>成功时返回 HTTP 204 No Content；204 响应不能携带响应体，
+     * 因此该接口不使用 {@link ApiResponse} 包装。</p>
+     */
     @DeleteMapping("/{conversationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteConversation(

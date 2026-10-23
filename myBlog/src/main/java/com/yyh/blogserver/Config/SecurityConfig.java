@@ -2,6 +2,7 @@ package com.yyh.blogserver.Config;
 
 import com.yyh.blogserver.Auth.filter.JwtAuthenticationFilter;
 import com.yyh.blogserver.Common.ApiErrorResponseWriter;
+import com.yyh.blogserver.Common.enums.ErrorCode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -69,17 +70,13 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) ->
                                 apiErrorResponseWriter.write(
                                         response,
-                                        401,
-                                        "未登录或登录状态已失效",
-                                        request.getRequestURI()
+                                        ErrorCode.UNAUTHORIZED
                                 )
                         )
                         .accessDeniedHandler((request, response, accessDeniedException) ->
                                 apiErrorResponseWriter.write(
                                         response,
-                                        403,
-                                        "无权访问此功能",
-                                        request.getRequestURI()
+                                        ErrorCode.FORBIDDEN
                                 )
                         )
                 )
